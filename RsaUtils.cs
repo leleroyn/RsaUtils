@@ -16,11 +16,9 @@ public class RsaUtils
     private Encoding _encoding;
     private RSA _rsaInstance;
     private RsaUtils() { }
-    public RsaUtils GetInstance(string key, CertificateType certificateType, RSAType rsaType)
-    {
-        return GetInstance(key, certificateType, rsaType, Encoding.UTF8);
-    }
-    public RsaUtils GetInstance(string key, CertificateType certificateType, RSAType rsaType, Encoding encoding)
+    public RsaUtils(string key, CertificateType certificateType, RSAType rsaType) : this(key, certificateType, rsaType, Encoding.UTF8) { }
+   
+    public RsaUtils (string key, CertificateType certificateType, RSAType rsaType, Encoding encoding)
     {
         this._hashAlgorithmName = rsaType == RSAType.RSA ? HashAlgorithmName.SHA1 : HashAlgorithmName.SHA256;
         this._encoding = encoding;
@@ -32,10 +30,8 @@ public class RsaUtils
                 break;
             case CertificateType.PrivateKey:
                 _rsaInstance = CreateRsaByPrivateKey(key);
-                break;
-            default: return null;
-        }
-        return this;
+                break;         
+        }   
     }
 
     #region 使用私钥签名
@@ -59,7 +55,6 @@ public class RsaUtils
     /// <param name="data">原始数据</param>
     /// <param name="sign">签名</param>
     /// <returns></returns>
-
     public bool Verify(string data, string sign)
     {
         byte[] dataBytes = _encoding.GetBytes(data);
@@ -259,19 +254,16 @@ public class RsaUtils
         PublicKey,
         PrivateKey
     }
+    
     /// <summary>
-
     /// RSA算法类型
-
     /// </summary>
-
     public enum RSAType
     {
         /// <summary>
         /// SHA1
         /// </summary>
         RSA = 0,
-
         /// <summary>
         /// RSA2 密钥长度至少为2048
         /// SHA256
